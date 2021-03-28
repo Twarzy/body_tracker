@@ -24,6 +24,8 @@ import datetime
 # TODO Different User profile details
 
 
+
+
 def home(request):
     return render(request, 'bst/home.html', context={'title': 'Home Page'})
 
