@@ -1,0 +1,89 @@
+{% extends 'bst/base.html' %}
+{% block content %}
+
+<h1> BST - BodySize spamer Test Panel</h1>
+<a class="btn btn-primary" href="{% url 'measure-add' %}" role="button">Add new measurement</a>
+<a class="btn btn-primary" href="{% url 'dashboard-all' %}" role="button">All records</a>
+<a class="btn btn-secondary" href="{% url 'dashboard' %}" role="button">Dashboard</a>
+
+
+
+ <div class="alert alert-primary"> <!-- TODO alert class -->>
+   <h4>{{ spams.spams.chest }}</h4>
+ </div>
+
+{% for spam in spams %}
+  {% if forloop.counter < 3 %}
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">{% if forloop.counter == 1 %}Start{% else %}Now{% endif %}</th>
+            <th scope="col">Weight</th>
+            <th scope="col">Chest</th>
+            <th scope="col">Waist</th>
+            <th scope="col">Biceps</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <th scope="row">{{ spam.date|date:"d/m/y" }}</th>
+            {% if spam.weight == None %}
+            <td>&nbsp&nbsp-</td>
+            {% else %}
+            <td>{{ spam.weight }} kg</td>
+            {% endif %}
+
+            {% if spam.chest == None %}
+            <td>&nbsp&nbsp-</td>
+            {% else %}
+            <td>{{ spam.chest }} cm</td>
+            {% endif %}
+
+            {% if spam.waist == None %}
+            <td>&nbsp&nbsp-</td>
+            {% else %}
+            <td>{{ spam.waist }} cm</td>
+            {% endif %}
+
+            {% if spam.biceps == None %}
+            <td>&nbsp&nbsp-</td>
+            {% else %}
+            <td>{{ spam.biceps }} cm</td>
+            {% endif %}
+          </tr>
+        </tbody>
+      </table>
+
+  {% elif forloop.last %}
+   <!-- Compare table with percentage spam -->
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Days&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+            <th scope="col">Weight</th>
+            <th scope="col">Chest</th>
+            <th scope="col">Waist</th>
+            <th scope="col">Biceps</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <th scope="row">{{ spam.date }}</th>
+            <td>{{ spam.weight }} %</td>
+            <td>{{ spam.chest }} %</td>
+            <td>{{ spam.waist }} %</td>
+            <td>{{ spam.biceps }} %</td>
+          </tr>
+        </tbody>
+      </table>
+  {% endif %}
+{% endfor %}
+
+<canvas id="myChart" width="900" height="380"></canvas>
+
+
+{% endblock %}

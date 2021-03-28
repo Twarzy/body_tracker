@@ -1,0 +1,27 @@
+{% extends 'bst/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+    <div class="content-section mt-2">
+      <div class="form-group">
+        <h2 class="account-heading">Your account</h2>
+        <p class="text-secondary">{{ user.email }}
+        <a class="btn btn-primary" href="{% url 'dashboard' %}" role="button">Back to dashboard</a>
+        </p>
+      </div>
+       <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <fieldset>
+                <legend class="border-bottom mb-4">{{ user.username }}</legend>
+                {{ u_form|crispy }}
+                {{ p_form|crispy }}
+            </fieldset>
+            <div class="form-group mt-2">
+               <button class="btn btn-outline-success" type="submit">Update</button>
+               <a class="btn btn-secondary" href="{% url 'password_change' %}" role="button">Change Password</a>
+            </div>
+
+        </form>
+    </div>
+
+{% endblock %}

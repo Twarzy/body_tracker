@@ -1,0 +1,149 @@
+{% extends 'bst/base.html' %}
+{% block content %}
+
+<div class="mt-4 mb-4">
+  <a class="btn btn-primary" href="{% url 'measure-add' %}" role="button">Add new measurement</a>
+  <a class="btn btn-primary" href="{% url 'dashboard-all' %}" role="button">All records</a>
+  <a class="btn btn-secondary" href="{% url 'testing-panel' %}" role="button">Testing panel</a>
+</div>
+
+{% if not measures %}
+<h2>Your database is empty. Add your first measurements to take full advantage from BST. </h2>
+{% else %}
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">Start</th>
+      <th scope="col">Now</th>
+      <th scope="col">Progress</th>
+      <th scope="col">Progress [%]</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">{{ start.date|date:"d/m/y" }}</th>
+      <th scope="col">{{ changes.date }} days</th>
+      <th scope="col">-</th>
+      <th scope="col">-</th>
+    </tr>
+    <tr>
+      <th scope="col">Weight</th>
+      <td>{% if start.weight %}{{ start.weight }} kg{% else %} - {% endif %}</td>
+      <td>{% if now.weight %}{{ now.weight }} kg{% else %} - {% endif %}</td>
+      <td>{% if changes.weight > 0 %}+{% endif %}{{ changes.weight }} kg</td>
+      <td>{% if perc.weight > 0 %}+{% endif %}{{ perc.weight }} %</td>
+    </tr>
+    <tr>
+      <th scope="col">Chest</th>
+      <td>{% if start.chest %}{{ start.chest }} cm{% else %} - {% endif %}</td>
+      <td>{% if now.chest %}{{ now.chest }} cm{% else %} - {% endif %}</td>
+      <td>{% if changes.chest > 0 %}+{% endif %}{{ changes.chest }} cm</td>
+      <td>{% if perc.chest > 0 %}+{% endif %}{{ perc.chest }} %</td>
+    </tr>
+    <tr>
+      <th scope="col">Waist</th>
+      <td>{% if start.waist %}{{ start.waist }} cm{% else %}-{% endif %}</td>
+      <td>{% if now.waist %}{{ now.waist }} cm{% else %}-{% endif %}</td>
+      <td>{% if changes.waist > 0 %}+{% endif %}{{ changes.waist }} cm</td>
+      <td>{% if perc.waist > 0 %}+{% endif %}{{ perc.waist }} %</td>
+    </tr>
+    <tr>
+      <th scope="col">Biceps</th>
+      <td>{% if start.biceps %}{{ start.biceps }} cm{% else %}-{% endif %}</td>
+      <td>{% if now.biceps %}{{ now.biceps }} cm{% else %}-{% endif %}</td>
+      <td>{% if changes.biceps > 0 %}+{% endif %}{{ changes.biceps }} cm</td>
+      <td>{% if perc.biceps > 0 %}+{% endif %}{{ perc.biceps }} %</td>
+    </tr>
+  </tbody>
+</table>
+{% endif %}
+
+<!-- old
+<br><hr><br>
+
+{% for measure in measures %}
+  {% if forloop.counter < 3 %}
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">{% if forloop.counter == 1 %}Start{% else %}Now{% endif %}</th>
+            <th scope="col">Weight</th>
+            <th scope="col">Chest</th>
+            <th scope="col">Waist</th>
+            <th scope="col">Biceps</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <th scope="row">{{ measure.date|date:"d/m/y" }}</th>
+            {% if measure.weight == None %}
+            <td>&nbsp&nbsp-</td>
+            {% else %}
+            <td>{{ measure.weight }} kg</td>
+            {% endif %}
+
+            {% if measure.chest == None %}
+            <td>&nbsp&nbsp-</td>
+            {% else %}
+            <td>{{ measure.chest }} cm</td>
+            {% endif %}
+
+            {% if measure.waist == None %}
+            <td>&nbsp&nbsp-</td>
+            {% else %}
+            <td>{{ measure.waist }} cm</td>
+            {% endif %}
+
+            {% if measure.biceps == None %}
+            <td>&nbsp&nbsp-</td>
+            {% else %}
+            <td>{{ measure.biceps }} cm</td>
+            {% endif %}
+          </tr>
+        </tbody>
+      </table>
+
+  {% else %}
+  -->
+   <!-- Compare table with percentage measure
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Days&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+            <th scope="col">Weight</th>
+            <th scope="col">Chest</th>
+            <th scope="col">Waist</th>
+            <th scope="col">Biceps</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <th scope="row">{{ measure.date }}</th>
+            <td>{{ measure.weight }} %</td>
+            <td>{{ measure.chest }} %</td>
+            <td>{{ measure.waist }} %</td>
+            <td>{{ measure.biceps }} %</td>
+          </tr>
+        </tbody>
+
+         <tfoot>
+          <th scope="row">{{ measure.date }}</th>
+            <td>{{ measure.weight }} %</td>
+            <td>{{ measure.chest }} %</td>
+            <td>{{ measure.waist }} %</td>
+            <td>{{ measure.biceps }} %</td>
+         </tfoot>
+
+      </table>
+  {% endif %}
+{% endfor %}
+          -->
+
+{% endblock %}

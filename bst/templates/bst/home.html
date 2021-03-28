@@ -1,0 +1,14 @@
+{% extends 'bst/base.html' %}
+{% block content %}
+    <h1 class="display-1"> Bodysize tracker by twarzy</h1> <br>
+
+    <div class="container">
+    {% if user.is_authenticated %}
+        <p class="h3">Hi {{ user }}, thank you for using my web app</p>
+    {% else %}
+        <p class="h3">Hi! Please login or register to access all features of BST web app</p>
+    {% endif %}
+    </div>
+
+
+{% endblock %}

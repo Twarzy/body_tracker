@@ -1,0 +1,18 @@
+{% extends 'bst/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div>
+
+        <form method="POST">
+            <fieldset>
+                <legend>Register</legend>
+                    {% csrf_token %}
+                    {{ form|crispy }}
+            </fieldset>
+            <div>
+                <button class="btn btn-outline-primary mt-2" type="submit">Register</button>
+            </div>
+        </form>
+
+    </div>
+{% endblock %}

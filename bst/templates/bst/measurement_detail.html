@@ -1,0 +1,30 @@
+{% extends 'bst/base.html' %}
+{% block content %}
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">When</th>
+      <th scope="col">Weight</th>
+      <th scope="col">Chest</th>
+      <th scope="col">Waist</th>
+      <th scope="col">Biceps</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr>
+
+      <td>{{ object.date | date:"d/m/y" }}</td>
+      <td>{{ object.weight }} kg</td>
+      <td>{{ object.chest }} cm</td>
+      <td>{{ object.waist }} cm</td>
+      <td>{{ object.biceps }} cm</td>
+    </tr>
+
+  </tbody>
+</table>
+
+{% endblock %}
+
+
