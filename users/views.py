@@ -21,25 +21,36 @@ def register(request):
     return render(request, 'users/register.html', {'form': form})
 
 
-@login_required()
+
+@login_required
 def profile(request):
     if request.method == 'POST':
         u_form = UserUpdateForm(request.POST, instance=request.user)
         p_form = ProfileUpdateForm(request.POST, instance=request.user.profile)
 
-        if u_form.is_valid() and p_form.is_valid():
+#TODO BUG - if u_form is not valied (username already taken) p_form is overwrite profile model as blank
+
+        if u_form.is_valid():
             u_form.save()
+            messages.success(request, 'Your account has been changed')
+            return redirect('profile')
+
+
+        elif p_form.is_valid():
             p_form.save()
-            messages.success(request, 'Your account has been updated')
+            messages.success(request, 'Your profile details has been updated')
             return redirect('profile')
 
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=request.user.profile)
 
+    activated = request.GET.get('change')
+
     context = {
         'u_form': u_form,
-        'p_form': p_form
+        'p_form': p_form,
+        'activated': activated
     }
 
     return render(request, 'users/profile.html', context)

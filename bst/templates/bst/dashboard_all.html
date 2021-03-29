@@ -1,0 +1,60 @@
+{% extends 'bst/base.html' %}
+{% block content %}
+<h1 class="mb-4"> Your measurement history</h1>
+<a class="btn btn-primary" href="{% url 'measure-add' %}" role="button">Add new measurement</a>
+<a class="btn btn-secondary" href="{% url 'dashboard' %}" role="button">Back to Dashboard</a>
+
+{% if measures %}
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">Weight</th>
+      <th scope="col">Chest</th>
+      <th scope="col">Waist</th>
+      <th scope="col">Biceps</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+
+  {% for measure in measures %}
+    <tr>
+      <th scope="row">{{ measure.date|date:"d/m/y" }}</th>
+      {% if measure.weight == None %}
+      <td>&nbsp&nbsp-</td>
+      {% else %}
+      <td>{{ measure.weight }} kg</td>
+      {% endif %}
+
+      {% if measure.chest == None %}
+      <td>&nbsp&nbsp-</td>
+      {% else %}
+      <td>{{ measure.chest }} cm</td>
+      {% endif %}
+
+      {% if measure.waist == None %}
+      <td>&nbsp&nbsp-</td>
+      {% else %}
+      <td>{{ measure.waist }} cm</td>
+      {% endif %}
+
+      {% if measure.biceps == None %}
+      <td>&nbsp&nbsp-</td>
+      {% else %}
+      <td>{{ measure.biceps }} cm</td>
+      {% endif %}
+
+      <td><a class="btn btn-primary" href="{% url 'measure-edit' measure.user measure.pk %}" role="button">EDIT</a></td>
+    </tr>
+  {% endfor %}
+
+  </tbody>
+</table>
+
+{% else %}
+
+    <h3 class="mt-4"> {{ user }} You don't have any measurement in data base</h3>
+
+{% endif %}
+{% endblock %}
