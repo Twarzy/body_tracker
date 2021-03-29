@@ -22,6 +22,8 @@ import datetime
 # TODO Password recovery
 # TODO Delete Account
 # TODO Different User profile details
+# TODO height BMI
+# TODO tracking water level/FAT in body
 
 
 
