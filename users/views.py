@@ -1,10 +1,14 @@
 from django.shortcuts import render, redirect, reverse
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordChangeDoneView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from .models import Profile
 from .forms import (UserRegisterForm,
                     UserUpdateForm,
-                    ProfileUpdateForm,
+                    ProfileEditForm,
                     )
 
 
@@ -22,38 +26,67 @@ def register(request):
 
 
 
-@login_required
 def profile(request):
+
     if request.method == 'POST':
-        u_form = UserUpdateForm(request.POST, instance=request.user)
-        p_form = ProfileUpdateForm(request.POST, instance=request.user.profile)
+        form = ProfileEditForm(request.POST, instance=request.user.profile)
 
-#TODO BUG - if u_form is not valied (username already taken) p_form is overwrite profile model as blank
-
-        if u_form.is_valid():
-            u_form.save()
-            messages.success(request, 'Your account has been changed')
-            return redirect('profile')
-
-
-        elif p_form.is_valid():
-            p_form.save()
-            messages.success(request, 'Your profile details has been updated')
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your profile has been updated')
             return redirect('profile')
 
     else:
-        u_form = UserUpdateForm(instance=request.user)
-        p_form = ProfileUpdateForm(instance=request.user.profile)
+        form = ProfileEditForm(instance=request.user.profile)
+    profile = Profile.objects.filter(user=request.user).first()
 
     activated = request.GET.get('change')
 
     context = {
-        'u_form': u_form,
-        'p_form': p_form,
+        'profile': profile,
+        'form': form,
         'activated': activated
     }
 
     return render(request, 'users/profile.html', context)
+
+# def change_account_details(request):
+    # if request.method == 'POST':
+    #     u_form = UserUpdateForm(request.POST, instance=request.user)
+    #     p_form = ProfileUpdateForm(request.POST, instance=request.user.profile)
+    #
+    #     # TODO BUG - if u_form is not valied (username already taken) p_form is overwrite profile model as blank
+    #
+    #     if not u_form.is_valid():
+    #         messages.info(request, 'Error')
+    #         return redirect('profile')
+    #
+    #     elif u_form.is_valid():
+    #         if User.objects.filter(username=u_form.cleaned_data.get('username')).exists():
+    #             messages.warning(request, 'Username Taken')
+    #         else:
+    #             u_form.save()
+    #             messages.success(request, 'Your account has been changed')
+    #         return redirect('profile')
+    #
+    #     if p_form.is_valid():
+    #         p_form.save()
+    #         messages.success(request, 'Your profile details has been updated')
+    #         return redirect('profile')
+    #
+    # else:
+    #     u_form = UserUpdateForm(instance=request.user)
+    #     p_form = ProfileUpdateForm(instance=request.user.profile)
+    #
+    # activated = request.GET.get('change')
+    #
+    # context = {
+    #     'u_form': u_form,
+    #     'p_form': p_form,
+    #     'activated': activated
+    # }
+    #
+    # return render(request, 'users/profile.html', context)
 
 
 class UserPasswordChangeDone(PasswordChangeDoneView):

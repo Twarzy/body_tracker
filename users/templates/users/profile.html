@@ -13,39 +13,40 @@
   <hr>
   <div class="form-group mt-4">
     <p class="h2">{{ user.username }}
-    {% if not activated %}
-        <a class="btn btn-outline-primary btn-sm" href="{% url 'profile'%}?change=yes" role="button">
+    <p class="h3"><small class="text-muted">{{ user.email }}</small>
+    </p>
+  </div>
+  {% if not activated %}
+   <div>
+   <a class="btn btn-outline-primary btn-sm" href="{% url 'profile'%}?change=yes" role="button">
             EDIT
         </a>
-    </p>
-    {% endif %}
-      <p class="h3"><small class="text-muted">{{ user.email }}</small>
-    </p>
 
-  {% if activated %}
-    <form method="POST" >
-        {% csrf_token %}
-        <fieldset class="mb-2">
-         {{ u_form|crispy }}
-        </fieldset>
-        <button class="btn btn-outline-success" type="submit">Update</button>
-        <a class="btn btn-outline-danger btn-sm" href="{% url 'profile'%}" role="button">Cancel</a>
-    </form>
-    {% endif %}
+   <li> {{ profile.age }} </li>
+   <li> {{ profile.realname }} </li>
 
-    <form method="POST" class="mb-4">
+ }
+
+   </div>
+    {% else %}
+
+  <form method="POST" class="mb-4">
        {% csrf_token %}
-        <fieldset {% if activated %} disabled {% endif %}>
-            <legend class="border-bottom mt-4 mb-4">Your profile details</legend>
-            {{ p_form|crispy }}
+        <fieldset>
+            <legend class="border-bottom mt-4 mb-4">Edit your profile details</legend>
+            {{ form|crispy }}
         </fieldset>
-        {% if not activated %}
+
         <div class="form-group mt-2">
            <button class="btn btn-outline-success" type="submit">Update</button>
            <a class="btn btn-secondary" href="{% url 'password_change' %}" role="button">Change Password</a>
         </div>
-        {% endif %}
     </form>
+
+   <div>
+{% endif %}
+
+
     </div>
 </div>
 
