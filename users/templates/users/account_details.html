@@ -1,10 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'bst/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
 
-</body>
-</html>
+<div class="content-section mt-2">
+  <div class="form-group">
+    <h2 class="account-heading">Your account
+        <a class="btn btn-primary" href="{% url 'dashboard' %}" role="button">
+            Back to dashboard
+        </a>
+    </h2>
+  </div>
+  <hr>
+  <div class="form-group mt-4">
+
+  <form method="POST" class="mb-4">
+       {% csrf_token %}
+        <fieldset>
+            <legend class="border-bottom mt-4 mb-4">Edit your profile details</legend>
+            {{ form|crispy }}
+        </fieldset>
+
+        <div class="form-group mt-2">
+           <button class="btn btn-outline-success" type="submit">Update</button>
+           <a class="btn btn-outline-danger" href="{% url 'profile' %}" role="button">Cancel</a>
+        </div>
+    </form>
+
+   <div>
+
+{% endblock %}

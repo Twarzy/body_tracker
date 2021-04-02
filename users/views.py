@@ -25,7 +25,7 @@ def register(request):
     return render(request, 'users/register.html', {'form': form})
 
 
-
+@login_required
 def profile(request):
 
     if request.method == 'POST':
@@ -38,55 +38,37 @@ def profile(request):
 
     else:
         form = ProfileEditForm(instance=request.user.profile)
-    profile = Profile.objects.filter(user=request.user).first()
+    profile_obj = Profile.objects.filter(user=request.user).first()
 
     activated = request.GET.get('change')
 
     context = {
-        'profile': profile,
+        'profile': profile_obj,
         'form': form,
         'activated': activated
     }
 
     return render(request, 'users/profile.html', context)
 
-# def change_account_details(request):
-    # if request.method == 'POST':
-    #     u_form = UserUpdateForm(request.POST, instance=request.user)
-    #     p_form = ProfileUpdateForm(request.POST, instance=request.user.profile)
-    #
-    #     # TODO BUG - if u_form is not valied (username already taken) p_form is overwrite profile model as blank
-    #
-    #     if not u_form.is_valid():
-    #         messages.info(request, 'Error')
-    #         return redirect('profile')
-    #
-    #     elif u_form.is_valid():
-    #         if User.objects.filter(username=u_form.cleaned_data.get('username')).exists():
-    #             messages.warning(request, 'Username Taken')
-    #         else:
-    #             u_form.save()
-    #             messages.success(request, 'Your account has been changed')
-    #         return redirect('profile')
-    #
-    #     if p_form.is_valid():
-    #         p_form.save()
-    #         messages.success(request, 'Your profile details has been updated')
-    #         return redirect('profile')
-    #
-    # else:
-    #     u_form = UserUpdateForm(instance=request.user)
-    #     p_form = ProfileUpdateForm(instance=request.user.profile)
-    #
-    # activated = request.GET.get('change')
-    #
-    # context = {
-    #     'u_form': u_form,
-    #     'p_form': p_form,
-    #     'activated': activated
-    # }
-    #
-    # return render(request, 'users/profile.html', context)
+
+@login_required
+def change_account_details(request):
+    if request.method == 'POST':
+        form = UserUpdateForm(request.POST, instance=request.user)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your profile details has been updated')
+            return redirect('profile')
+
+    else:
+        form = UserUpdateForm(instance=request.user)
+
+    context = {
+        'form': form
+    }
+
+    return render(request, 'users/account_details.html', context)
 
 
 class UserPasswordChangeDone(PasswordChangeDoneView):
