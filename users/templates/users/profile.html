@@ -13,19 +13,24 @@
   <hr>
   <div class="form-group mt-4">
     <p class="h2">{{ user.username }}
+    <a class="btn btn-outline-primary btn-sm" href="{% url 'account_details'%}" role="button">
+                Change username or email
+            </a>
     <p class="h3"><small class="text-muted">{{ user.email }}</small>
     </p>
   </div>
   {% if not activated %}
    <div>
-   <a class="btn btn-outline-primary btn-sm" href="{% url 'profile'%}?change=yes" role="button">
-            EDIT
-        </a>
+       <a class="btn btn-outline-primary btn-sm" href="{% url 'profile'%}?change=yes" role="button">
+                EDIT
+            </a>
+       <a class="btn btn-outline-secondary btn-sm" href="{% url 'password_change' %}" role="button">Change Password</a>
 
-   <li> {{ profile.age }} </li>
-   <li> {{ profile.realname }} </li>
+       <div class="h4 mt-4">
+           <li>Age -  {{ profile.age }} </li>
+           <li>Name -  {{ profile.realname }} </li>
+        </div>
 
- }
 
    </div>
     {% else %}
@@ -39,7 +44,7 @@
 
         <div class="form-group mt-2">
            <button class="btn btn-outline-success" type="submit">Update</button>
-           <a class="btn btn-secondary" href="{% url 'password_change' %}" role="button">Change Password</a>
+           <a class="btn btn-outline-danger" href="{% url 'profile' %}" role="button">Cancel</a>
         </div>
     </form>
 
