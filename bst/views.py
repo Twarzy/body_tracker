@@ -8,6 +8,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Measurement
+from users.models import Profile
 from .forms import MeasurementForm
 from django.utils import timezone
 from django.template.context_processors import csrf
@@ -17,12 +18,16 @@ import datetime
 # TODO Export data to various formats (csv, pdf, ?) API?
 # TODO Progress chart in dashboard
 # TODO User gallery (rather private)
-
+# TODO MEASUREMENT url should be <username>/<date> format
+# TODO BMI CALCULATOR for not logged user too
+# TODO detailed add measurement (with lots of body part, BMI, water level, fat level)
+# TODO BMI ANALYZER from profile
 # TODO USER
 # TODO Password recovery
 # TODO Delete Account
 # TODO Different User profile details
-# TODO height BMI
+# TODO height BMI (when adding measurement BMI should be auto evaluate and add to measurement table)
+
 # TODO tracking water level/FAT in body
 
 
@@ -49,6 +54,7 @@ def dashboard(request):
     all_measure = Measurement.objects.filter(user=request.user).order_by('-date')
     start_measure = Measurement.objects.filter(user=request.user).order_by('date').first()
     latest_measure = Measurement.objects.filter(user=request.user).order_by('date').last()
+    user_profile = Profile.objects.filter(user=request.user).first()
 
     # if some records are missing from latest measurement, it takes records from earlier one
     for rec in all_measure:
@@ -64,7 +70,7 @@ def dashboard(request):
             break
 
     if not start_measure:
-        return render(request, 'bst/dashboard.html')
+        return render(request, 'bst/dashboard.html', {'profile': user_profile})
     else:
         changes_perc = {'date': (latest_measure.date - start_measure.date).days,
                         'weight': percentage(start_measure.weight, latest_measure.weight),
@@ -84,7 +90,8 @@ def dashboard(request):
                    'start': start_measure,
                    'now': latest_measure,
                    'changes': changes,
-                   'perc': changes_perc
+                   'perc': changes_perc,
+                   'profile': user_profile
                    }
 
         return render(request, 'bst/dashboard.html', context)
@@ -195,6 +202,25 @@ def compare_two(last, first):
         return last - first
     except TypeError:
         return '-'
+
+def bmi_calculator(req_user):
+    height, weight = None, None
+
+    if Profile.objects.filter(user=req_user).first():
+        height = Profile.objects.filter(user=req_user).first().height
+    if Measurement.objects.filter(user=req_user).order_by('date').last():
+        weight = Measurement.objects.filter(user=req_user).order_by('date').last().weight
+
+    if height and weight:
+        bmi = round(weight / (height / 100)**2, 1)
+        return [bmi, bmi_analyzer(bmi)]
+
+# Simple version for now, will be expanded later
+def bmi_analyzer(bmi):
+
+    category = 'Thinness' if bmi < 18.5 else 'Normal' if bmi < 25 else 'Overweight'
+    return category
+
 
 
 def test(request):

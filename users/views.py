@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordChangeDoneView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from bst.views import bmi_calculator
+from bst.models import Measurement
 from .models import Profile
 from .forms import (UserRegisterForm,
                     UserUpdateForm,
@@ -40,12 +42,17 @@ def profile(request):
         form = ProfileEditForm(instance=request.user.profile)
     profile_obj = Profile.objects.filter(user=request.user).first()
 
+    latest_measure = Measurement.objects.filter(user=request.user).order_by('date').last()
+
     activated = request.GET.get('change')
+
+    bmi = bmi_calculator(request.user)
 
     context = {
         'profile': profile_obj,
         'form': form,
-        'activated': activated
+        'activated': activated,
+        'bmi': bmi
     }
 
     return render(request, 'users/profile.html', context)
@@ -84,6 +91,8 @@ class UserPasswordChangeDone(PasswordChangeDoneView):
             return 'Password changed successfully'
 
     extra_context = {'messages': [SuccessMessage]}
+
+
 
 
 # TODO profile, change photo, change password, maybe change username, change email

@@ -1,12 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     age = models.PositiveIntegerField(blank=True, null=True)
-    realname = models.CharField(blank=True, null=True, max_length=50)
+    height = models.IntegerField(blank=True, null=True,
+                                 validators=[MinValueValidator(1), MaxValueValidator(250)])
 
     # image = models.ImageField(default='default.jpg', upload_to='profile_pics')
 

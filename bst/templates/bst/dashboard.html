@@ -7,8 +7,13 @@
   <a class="btn btn-secondary" href="{% url 'testing-panel' %}" role="button">Testing panel</a>
 </div>
 
+{% if not profile.height %}
+<h3> Hi {{user}}, we strongly recommend to add few information about you to take full advantage
+      from BST. You can do this <a href="{% url 'profile'%}?change=yes">here</a>.</h3>
+{% endif %}
+<br>
 {% if not measures %}
-<h2>Your database is empty. Add your first measurements to take full advantage from BST. </h2>
+<h3>Your database is empty. Add your first measurement <a href="{% url 'measure-add' %}">here</a>.</h3>
 {% else %}
 <table class="table table-striped">
   <thead>
