@@ -33,6 +33,7 @@ urlpatterns = [
     path('add/', MeasureCreateView.as_view(), name='measure-add'),
     path('measure/<str:user>/<int:pk>/edit', MeasureEditView.as_view(), name='measure-edit'),
     path('measure/<str:user>/<int:pk>/delete', MeasureDeleteView.as_view(), name='measure-delete'),
+    path('export/', views.export_records, name='export'),
 
     # testing_panel
     path('test', views.testing_panel, name='testing-panel'),

@@ -1,0 +1,22 @@
+{% extends 'bst/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<h1>{{spam}}</h1>
+<h1 class="mb-4"> Export</h1>
+
+
+
+<form name="main" method="POST" class="mt-4">
+  {% csrf_token %}
+  <div class="form-group mb-2">
+    <label>Pick file format</label>
+    <select class="form-control" id="file-format" name="file-format">
+      <option>CSV</option>
+      <option>PDF</option>
+    </select>
+  </div>
+  <button type="submit" class="btn btn-primary">Export</button>
+  <a class="btn btn-secondary" href="{% url 'dashboard-all' %}" role="button">Back</a>
+</form>
+
+{% endblock %}

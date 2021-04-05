@@ -12,7 +12,7 @@ from users.models import Profile
 from .forms import MeasurementForm
 from django.utils import timezone
 from django.template.context_processors import csrf
-import datetime
+import datetime, csv
 
 
 # TODO Export data to various formats (csv, pdf, ?) API?
@@ -185,6 +185,32 @@ class MeasureDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == measure.user:
             return True
         return False
+
+# Export user measurements
+
+def export_records(request):
+    if request.method == 'POST':
+        if request.POST.getlist('file-format')[0] == 'CSV':
+
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="BST_{}.csv"'.format(request.user)
+            all_measure = Measurement.objects.filter(user=request.user).order_by('-date')
+
+            writer = csv.writer(response)
+
+
+            return response
+        else:
+            spam='sorry PDF file not supported yet'
+
+            # spam = request.POST.getlist('file-format')
+            context = {'spam': spam}
+            return render(request, 'bst/export.html', context)
+
+
+    return render(request, 'bst/export.html')
+
+
 
 
 # Utilities
