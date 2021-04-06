@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect, reverse
+from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import PasswordChangeDoneView
+from django.contrib.auth.views import PasswordChangeDoneView, PasswordChangeView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from django.contrib.messages.views import SuccessMessageMixin
 from bst.views import bmi_calculator
 from bst.models import Measurement
 from .models import Profile
@@ -78,21 +80,10 @@ def change_account_details(request):
     return render(request, 'users/account_details.html', context)
 
 
-class UserPasswordChangeDone(PasswordChangeDoneView):
+class PasswordChange(PasswordChangeView):
+    template_name = 'users/password_change.html'
+    success_url = reverse_lazy('profile')
 
-    # TODO change this "fancy" massage to the one provided by django,
-    # or skip passwordchangedone and leave just password change with added success
-    # message after password change
-
-    class SuccessMessage:
-        tags = 'success'
-
-        def __str__(self):
-            return 'Password changed successfully'
-
-    extra_context = {'messages': [SuccessMessage]}
-
-
-
-
-# TODO profile, change photo, change password, maybe change username, change email
+    def form_valid(self, form):
+        messages.success(self.request, 'Your password has been changed.')
+        return super().form_valid(form)

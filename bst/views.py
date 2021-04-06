@@ -192,18 +192,21 @@ def export_records(request):
     if request.method == 'POST':
         if request.POST.getlist('file-format')[0] == 'CSV':
 
-            response = HttpResponse(content_type='text/csv')
-            response['Content-Disposition'] = 'attachment; filename="BST_{}.csv"'.format(request.user)
-            all_measure = Measurement.objects.filter(user=request.user).order_by('-date')
+                response = HttpResponse(content_type='text/csv')
+                response['Content-Disposition'] = 'attachment; filename="BST_{}.csv"'.format(request.user)
+                all_measure = Measurement.objects.filter(user=request.user).order_by('-date')
+                fields = [field.name for field in get_model_fields(Measurement) if field.name not in ['id','user']]
+                writer = csv.writer(response)
+                writer.writerow(x.upper() for x in fields)
 
-            writer = csv.writer(response)
+                for obj in all_measure:
+                    writer.writerow(getattr(obj, field) for field in fields)
 
+                return response
 
-            return response
         else:
             spam='sorry PDF file not supported yet'
 
-            # spam = request.POST.getlist('file-format')
             context = {'spam': spam}
             return render(request, 'bst/export.html', context)
 
@@ -214,6 +217,9 @@ def export_records(request):
 
 
 # Utilities
+
+def get_model_fields(model):
+    return model._meta.fields
 
 def percentage(first, last):
     # Simple algorithm returning percentage change in two values

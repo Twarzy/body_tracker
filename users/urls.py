@@ -21,9 +21,5 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('profile/', views.profile, name='profile'),
     path('profile/account-details', views.change_account_details, name='account_details'),
-    path('profile/change-password', auth_views.PasswordChangeView.as_view(
-        template_name='users/password_change.html'), name='password_change'),
-    path('profile/change_password_done', views.UserPasswordChangeDone.as_view(
-        template_name='users/password_change_done.html'), name='password_change_done')
-
+    path('profile/change-password/', views.PasswordChange.as_view(), name='password_change'),
 ]

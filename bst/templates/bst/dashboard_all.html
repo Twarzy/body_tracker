@@ -2,7 +2,9 @@
 {% block content %}
 <h1 class="mb-4"> Your measurement history</h1>
 <a class="btn btn-primary" href="{% url 'measure-add' %}" role="button">Add new measurement</a>
+{% if measures %}
 <a class="btn btn-primary" href="{% url 'export' %}" role="button">Export Data</a>
+{% endif %}
 <a class="btn btn-secondary" href="{% url 'dashboard' %}" role="button">Back to Dashboard</a>
 
 {% if measures %}
