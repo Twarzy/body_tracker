@@ -27,7 +27,8 @@ urlpatterns = [
     path('bst/', include('bst.urls')),
     path('', include('users.urls')),
     #  testing pages - to delete in future
-    path('test', bst_views.test, name='test'), # to delete in future
+
+    # path('test', bst_views.test, name='test'), # to delete in future
 
     # old to delete
     # path('register', auth_views.LoginView.as_view(template_name='users/login.html'), name='register'),

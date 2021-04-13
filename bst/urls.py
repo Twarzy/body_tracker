@@ -22,6 +22,7 @@ from bst.views import (
     DashboardView,
     MeasureEditView,
     MeasureDeleteView,
+    TestView,
 )
 
 
@@ -29,14 +30,15 @@ urlpatterns = [
 
     path('', views.dashboard, name='dashboard'),
     path('all/', MeasureView.as_view(), name='dashboard-all'),
-    path('measure/<str:user>/<int:pk>', MeasureDetailView.as_view(), name='measure-detail'),
+    path('<str:user>/<slug:slug>', MeasureDetailView.as_view(), name='measure-detail'),
     path('add/', MeasureCreateView.as_view(), name='measure-add'),
-    path('measure/<str:user>/<int:pk>/edit', MeasureEditView.as_view(), name='measure-edit'),
-    path('measure/<str:user>/<int:pk>/delete', MeasureDeleteView.as_view(), name='measure-delete'),
+    path('<str:user>/<slug:slug>/edit', MeasureEditView.as_view(), name='measure-edit'),
+    path('<str:user>/<slug:slug>/delete', MeasureDeleteView.as_view(), name='measure-delete'),
     path('export/', views.export_records, name='export'),
 
     # testing_panel
-    path('test', views.testing_panel, name='testing-panel'),
+    # path('test', views.testing_panel, name='testing-panel'),
+    path('test', TestView.as_view(), name='testing-panel'),
 
     # old - delete in future
     # path('tracker/', views.tracker, name='tracker')

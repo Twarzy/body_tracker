@@ -13,9 +13,11 @@ from .forms import MeasurementForm
 from django.utils import timezone
 from django.template.context_processors import csrf
 import datetime, csv
+import io
+from django.http import FileResponse
+from reportlab.pdfgen import canvas
 
 
-# TODO Export data to various formats (csv, pdf, ?) API?
 # TODO Progress chart in dashboard
 # TODO User gallery (rather private)
 # TODO MEASUREMENT url should be <username>/<date> format
@@ -29,8 +31,6 @@ import datetime, csv
 # TODO height BMI (when adding measurement BMI should be auto evaluate and add to measurement table)
 
 # TODO tracking water level/FAT in body
-
-
 
 
 def home(request):
@@ -134,6 +134,7 @@ class MeasureCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 # Single measurement view (not really using for now)
 class MeasureDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Measurement
+    slug_field = 'date'
 
     def test_func(self):
         measure = self.get_object()
@@ -145,6 +146,7 @@ class MeasureDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 # Editing measurements
 class MeasureEditView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
     model = Measurement
+    slug_field = 'date'
     fields = ['weight', 'chest', 'waist', 'biceps']
     success_message = "Day %(date)s edited."
 
@@ -174,6 +176,7 @@ class MeasureEditView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMix
 # Delete measurement
 class MeasureDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Measurement
+    slug_field = 'date'
 
     # TODO add success message (SuccessMessageMixin not working on DeleteView)
 
@@ -203,13 +206,10 @@ def export_records(request):
                     writer.writerow(getattr(obj, field) for field in fields)
 
                 return response
-
+    # TODO export user data in PDF format, rather html template to PDF
         else:
-            spam='sorry PDF file not supported yet'
-
-            context = {'spam': spam}
-            return render(request, 'bst/export.html', context)
-
+            messages.info(request,'Sorry, PDF format not supported yet')
+            return redirect('export')
 
     return render(request, 'bst/export.html')
 
@@ -256,7 +256,7 @@ def bmi_analyzer(bmi):
 
 
 def test(request):
-    return render(request, 'bst/test.html')
+   pass
 
 
 # just for testing on early development
@@ -296,3 +296,13 @@ def testing_panel(request):
                    }
 
         return render(request, 'bst/panel.html', context)
+
+
+class TestView(LoginRequiredMixin, ListView):
+    model = Measurement
+    template_name = 'bst/test.html'
+    context_object_name = 'measures'
+
+    # Display only logged user records
+    def get_queryset(self):
+        return Measurement.objects.filter(user=self.request.user).order_by('-date')

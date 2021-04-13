@@ -48,7 +48,7 @@
       <td>{{ measure.biceps }} cm</td>
       {% endif %}
 
-      <td><a class="btn btn-primary" href="{% url 'measure-edit' measure.user measure.pk %}" role="button">EDIT</a></td>
+      <td><a class="btn btn-primary" href="{% url 'measure-edit' measure.user measure.date %}" role="button">EDIT</a></td>
     </tr>
   {% endfor %}
 
