@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 
+User._meta.get_field('email')._unique = True
 
 
 class Profile(models.Model):

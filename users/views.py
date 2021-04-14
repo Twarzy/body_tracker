@@ -4,9 +4,6 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordChangeDoneView, PasswordChangeView
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
-from django.contrib.messages.views import SuccessMessageMixin
 from bst.views import bmi_calculator
 from bst.models import Measurement
 from .models import Profile

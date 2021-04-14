@@ -10,12 +10,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from .models import Measurement
 from users.models import Profile
 from .forms import MeasurementForm
-from django.utils import timezone
-from django.template.context_processors import csrf
 import datetime, csv
-import io
-from django.http import FileResponse
-from reportlab.pdfgen import canvas
 
 
 # TODO Progress chart in dashboard
@@ -97,14 +92,6 @@ def dashboard(request):
         return render(request, 'bst/dashboard.html', context)
 
 
-# old unused - to delete in future
-class DashboardView(MeasureView):
-    template_name = 'bst/dashboard.html'
-
-    def get_queryset(self):
-        return Measurement.objects.filter(user=self.request.user).order_by('date')
-
-
 # Adding measurement
 class MeasureCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Measurement
@@ -136,6 +123,9 @@ class MeasureDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Measurement
     slug_field = 'date'
 
+    def get_queryset(self):
+        return Measurement.objects.filter(user=self.request.user)
+
     def test_func(self):
         measure = self.get_object()
         if self.request.user == measure.user:
@@ -150,6 +140,9 @@ class MeasureEditView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMix
     fields = ['weight', 'chest', 'waist', 'biceps']
     success_message = "Day %(date)s edited."
 
+    def get_queryset(self):
+        return Measurement.objects.filter(user=self.request.user)
+
     def get_success_message(self, cleaned_data):
         return self.success_message % dict(
             cleaned_data,
@@ -157,7 +150,7 @@ class MeasureEditView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMix
         )
 
     def get_success_url(self):
-        return reverse('dashboard-all')
+        return reverse('dashboard-all', args=[self.request.user])
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -178,10 +171,13 @@ class MeasureDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Measurement
     slug_field = 'date'
 
+    def get_queryset(self):
+        return Measurement.objects.filter(user=self.request.user)
+
     # TODO add success message (SuccessMessageMixin not working on DeleteView)
 
     def get_success_url(self):
-        return reverse('dashboard-all')
+        return reverse('dashboard-all', args=[self.request.user])
 
     def test_func(self):
         measure = self.get_object()
@@ -191,35 +187,35 @@ class MeasureDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 # Export user measurements
 
+
 def export_records(request):
     if request.method == 'POST':
         if request.POST.getlist('file-format')[0] == 'CSV':
 
-                response = HttpResponse(content_type='text/csv')
-                response['Content-Disposition'] = 'attachment; filename="BST_{}.csv"'.format(request.user)
-                all_measure = Measurement.objects.filter(user=request.user).order_by('-date')
-                fields = [field.name for field in get_model_fields(Measurement) if field.name not in ['id','user']]
-                writer = csv.writer(response)
-                writer.writerow(x.upper() for x in fields)
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="BST_{}.csv"'.format(request.user)
+            all_measure = Measurement.objects.filter(user=request.user).order_by('-date')
+            fields = [field.name for field in get_model_fields(Measurement) if field.name not in ['id', 'user']]
+            writer = csv.writer(response)
+            writer.writerow(x.upper() for x in fields)
 
-                for obj in all_measure:
-                    writer.writerow(getattr(obj, field) for field in fields)
+            for obj in all_measure:
+                writer.writerow(getattr(obj, field) for field in fields)
 
-                return response
+            return response
     # TODO export user data in PDF format, rather html template to PDF
         else:
-            messages.info(request,'Sorry, PDF format not supported yet')
+            messages.info(request, 'Sorry, PDF format not supported yet')
             return redirect('export')
 
     return render(request, 'bst/export.html')
-
-
 
 
 # Utilities
 
 def get_model_fields(model):
     return model._meta.fields
+
 
 def percentage(first, last):
     # Simple algorithm returning percentage change in two values
@@ -235,6 +231,7 @@ def compare_two(last, first):
     except TypeError:
         return '-'
 
+
 def bmi_calculator(req_user):
     height, weight = None, None
 
@@ -247,16 +244,17 @@ def bmi_calculator(req_user):
         bmi = round(weight / (height / 100)**2, 1)
         return [bmi, bmi_analyzer(bmi)]
 
+
 # Simple version for now, will be expanded later
+
 def bmi_analyzer(bmi):
 
     category = 'Thinness' if bmi < 18.5 else 'Normal' if bmi < 25 else 'Overweight'
     return category
 
 
-
 def test(request):
-   pass
+    pass
 
 
 # just for testing on early development

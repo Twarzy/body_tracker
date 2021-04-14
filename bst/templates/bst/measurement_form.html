@@ -51,7 +51,7 @@
                 </div>
             {% else %}
                 <button class="btn btn-primary btn-lg mt-4" type="submit">Add measurement</button>
-            <a class="btn btn-outline-secondary mt-4 " href="{% url 'dashboard-all' %}" role="button">Back</a>
+            <a class="btn btn-outline-secondary mt-4 " href="{% url 'dashboard-all' user %}" role="button">Back</a>
             {% endif %}
         </div>
     </form>
