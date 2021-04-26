@@ -1,6 +1,6 @@
 {% extends 'bst/base.html' %}
 {% block content %}
-<h1 class="mb-4"> Your measurement history</h1>
+<h1 class="mb-4 mt-2"> Your measurement history</h1>
 <a class="btn btn-primary" href="{% url 'measure-add' %}" role="button">Add new measurement</a>
 {% if measures %}
 <a class="btn btn-primary" href="{% url 'export' %}" role="button">Export Data</a>
@@ -57,7 +57,7 @@
 
 {% else %}
 
-    <h3 class="mt-4"> {{ user }} You don't have any measurement in data base</h3>
+    <h5 class="mt-4"> You don't have any measurement in database.</h5>
 
 {% endif %}
 {% endblock %}

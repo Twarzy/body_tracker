@@ -8,12 +8,14 @@
 </div>
 
 {% if not profile.height %}
-<h3> Hi {{user}}, we strongly recommend to add few information about you to take full advantage
-      from BST. You can do this <a href="{% url 'profile'%}?change=yes">here</a>.</h3>
+<h5> Hi! {{user}}, I strongly recommend to add few information (like height or age) about you to take full advantage
+      from BST. You can do this <a href="{% url 'profile'%}?change=yes">here</a>.</h5>
+    <br>
 {% endif %}
-<br>
+
 {% if not measures %}
-<h3>Your database is empty. Add your first measurement <a href="{% url 'measure-add' %}">here</a>.</h3>
+
+<h5>Your database is empty. Add your first measurement <a href="{% url 'measure-add' %}">here</a>.</h5>
 {% else %}
 <table class="table table-striped">
   <thead>
@@ -64,91 +66,4 @@
   </tbody>
 </table>
 {% endif %}
-
-<!-- old
-<br><hr><br>
-
-{% for measure in measures %}
-  {% if forloop.counter < 3 %}
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th scope="col">{% if forloop.counter == 1 %}Start{% else %}Now{% endif %}</th>
-            <th scope="col">Weight</th>
-            <th scope="col">Chest</th>
-            <th scope="col">Waist</th>
-            <th scope="col">Biceps</th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody>
-
-          <tr>
-            <th scope="row">{{ measure.date|date:"d/m/y" }}</th>
-            {% if measure.weight == None %}
-            <td>&nbsp&nbsp-</td>
-            {% else %}
-            <td>{{ measure.weight }} kg</td>
-            {% endif %}
-
-            {% if measure.chest == None %}
-            <td>&nbsp&nbsp-</td>
-            {% else %}
-            <td>{{ measure.chest }} cm</td>
-            {% endif %}
-
-            {% if measure.waist == None %}
-            <td>&nbsp&nbsp-</td>
-            {% else %}
-            <td>{{ measure.waist }} cm</td>
-            {% endif %}
-
-            {% if measure.biceps == None %}
-            <td>&nbsp&nbsp-</td>
-            {% else %}
-            <td>{{ measure.biceps }} cm</td>
-            {% endif %}
-          </tr>
-        </tbody>
-      </table>
-
-  {% else %}
-  -->
-   <!-- Compare table with percentage measure
-
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th scope="col">Days&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
-            <th scope="col">Weight</th>
-            <th scope="col">Chest</th>
-            <th scope="col">Waist</th>
-            <th scope="col">Biceps</th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody>
-
-          <tr>
-            <th scope="row">{{ measure.date }}</th>
-            <td>{{ measure.weight }} %</td>
-            <td>{{ measure.chest }} %</td>
-            <td>{{ measure.waist }} %</td>
-            <td>{{ measure.biceps }} %</td>
-          </tr>
-        </tbody>
-
-         <tfoot>
-          <th scope="row">{{ measure.date }}</th>
-            <td>{{ measure.weight }} %</td>
-            <td>{{ measure.chest }} %</td>
-            <td>{{ measure.waist }} %</td>
-            <td>{{ measure.biceps }} %</td>
-         </tfoot>
-
-      </table>
-  {% endif %}
-{% endfor %}
-          -->
-
 {% endblock %}

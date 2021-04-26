@@ -1,12 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
+import random
 
 User._meta.get_field('email')._unique = True
 
 
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    unique_id = models.CharField(max_length=5, default=str(random.randint(10000, 99999)))
     age = models.PositiveIntegerField(blank=True, null=True)
     height = models.IntegerField(blank=True, null=True,
                                  validators=[MinValueValidator(1), MaxValueValidator(250)])

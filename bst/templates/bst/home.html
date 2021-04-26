@@ -1,14 +1,26 @@
 {% extends 'bst/base.html' %}
 {% block content %}
-    <h1 class="display-1"> Bodysize tracker by twarzy</h1> <br>
 
-    <div class="container">
+    <div class="container mt-4">
+
     {% if user.is_authenticated %}
-        <p class="h3">Hi {{ user }}, thank you for using my web app</p>
-    {% else %}
-        <p class="h3">Hi! Please login or register to access all features of BST web app</p>
-    {% endif %}
-    </div>
 
+        <p class="h4">Thank you for using my web app {{ user }}.</p>
+        <p class="h4"> Go to <a href="{% url 'dashboard' %}">Dashboard.</a></p>
+    {% else %}
+        <h3>Welcome!</h3>
+
+        <p class="h4">BodySizeTracker will help you track your body measurements.</p>
+        <p class="h4">No matter if you exercise, being on diet or just want to stay healthy this webapp will be extremely usefull
+           for you.</p>
+        <p class="h4">
+            <a href="{% url 'login' %}">Login</a>
+          or
+            <a href="{% url 'register' %}">Register</a>
+          to access all features of BST.</p>
+    {% endif %}
+    <br>
+        <p class="h5 text-right" >&nbsp;&nbsp;&nbsp;-Twarzy</p>
+    </div>
 
 {% endblock %}

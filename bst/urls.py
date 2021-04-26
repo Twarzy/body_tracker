@@ -28,12 +28,14 @@ from bst.views import (
 urlpatterns = [
 
     path('', views.dashboard, name='dashboard'),
+    path('add/', MeasureCreateView.as_view(), name='measure-add'),
+    path('export/', views.export_records, name='export'),
     path('<username>/', MeasureView.as_view(), name='dashboard-all'),
     path('<username>/<slug:slug>', MeasureDetailView.as_view(), name='measure-detail'),
-    path('add/', MeasureCreateView.as_view(), name='measure-add'),
     path('<username>/<slug:slug>/edit', MeasureEditView.as_view(), name='measure-edit'),
     path('<username>/<slug:slug>/delete', MeasureDeleteView.as_view(), name='measure-delete'),
-    path('export/', views.export_records, name='export'),
+
+
 
     # testing_panel
     # path('test', views.testing_panel, name='testing-panel'),

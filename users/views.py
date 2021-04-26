@@ -14,6 +14,9 @@ from .forms import (UserRegisterForm,
 
 
 def register(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
@@ -59,6 +62,7 @@ def profile(request):
 
 @login_required
 def change_account_details(request):
+
     if request.method == 'POST':
         form = UserUpdateForm(request.POST, instance=request.user)
 

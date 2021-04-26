@@ -5,8 +5,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from django.utils.translation import gettext as _
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from .models import Measurement
 from users.models import Profile
 from .forms import MeasurementForm
@@ -15,16 +16,16 @@ import datetime, csv
 
 # TODO Progress chart in dashboard
 # TODO User gallery (rather private)
-# TODO MEASUREMENT url should be <username>/<date> format
+# TODO MEASUREMENT url should be <username>/<date> format (in progress)
 # TODO BMI CALCULATOR for not logged user too
 # TODO detailed add measurement (with lots of body part, BMI, water level, fat level)
 # TODO BMI ANALYZER from profile
+
 # TODO USER
 # TODO Password recovery
 # TODO Delete Account
 # TODO Different User profile details
 # TODO height BMI (when adding measurement BMI should be auto evaluate and add to measurement table)
-
 # TODO tracking water level/FAT in body
 
 
@@ -37,6 +38,30 @@ class MeasureView(LoginRequiredMixin, ListView):
     model = Measurement
     template_name = 'bst/dashboard_all.html'
     context_object_name = 'measures'
+
+    def get(self, request, *args, **kwargs):
+
+        # When user try to manually change username in url, he will be redirected to proper url
+        if kwargs['username'] != self.request.user.username:
+            return redirect('dashboard-all', self.request.user.username)
+
+        self.object_list = self.get_queryset()
+        allow_empty = self.get_allow_empty()
+
+        if not allow_empty:
+            # When pagination is enabled and object_list is a queryset,
+            # it's better to do a cheap query than to load the unpaginated
+            # queryset in memory.
+            if self.get_paginate_by(self.object_list) is not None and hasattr(self.object_list, 'exists'):
+                is_empty = not self.object_list.exists()
+            else:
+                is_empty = not self.object_list
+            if is_empty:
+                raise Http404(_('Empty list and “%(class_name)s.allow_empty” is False.') % {
+                    'class_name': self.__class__.__name__,
+                })
+        context = self.get_context_data()
+        return self.render_to_response(context)
 
     # Display only logged user records
     def get_queryset(self):
@@ -123,6 +148,16 @@ class MeasureDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Measurement
     slug_field = 'date'
 
+    def get(self, request, *args, **kwargs):
+
+        # When user try to manually change username in url, he will be redirected to proper url
+        if kwargs['username'] != self.request.user.username:
+            return redirect('measure-detail', self.request.user.username, kwargs['slug'])
+
+        self.object = self.get_object()
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
     def get_queryset(self):
         return Measurement.objects.filter(user=self.request.user)
 
@@ -139,6 +174,15 @@ class MeasureEditView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMix
     slug_field = 'date'
     fields = ['weight', 'chest', 'waist', 'biceps']
     success_message = "Day %(date)s edited."
+
+    def get(self, request, *args, **kwargs):
+
+        # When user try to manually change username in url, he will be redirected to proper url
+        if kwargs['username'] != self.request.user.username:
+            return redirect('measure-edit', self.request.user.username, kwargs['slug'])
+
+        self.object = self.get_object()
+        return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
         return Measurement.objects.filter(user=self.request.user)
@@ -170,6 +214,16 @@ class MeasureEditView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMix
 class MeasureDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Measurement
     slug_field = 'date'
+
+    def get(self, request, *args, **kwargs):
+
+        # When user try to manually change username in url, he will be redirected to proper url
+        if kwargs['username'] != self.request.user.username:
+            return redirect('measure-delete', self.request.user.username, kwargs['slug'])
+
+        self.object = self.get_object()
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
 
     def get_queryset(self):
         return Measurement.objects.filter(user=self.request.user)
@@ -211,8 +265,13 @@ def export_records(request):
     return render(request, 'bst/export.html')
 
 
+def contact(request):
+    return render(request, 'bst/contact.html')
+
+
 # Utilities
 
+# need for export_records function
 def get_model_fields(model):
     return model._meta.fields
 
@@ -246,7 +305,6 @@ def bmi_calculator(req_user):
 
 
 # Simple version for now, will be expanded later
-
 def bmi_analyzer(bmi):
 
     category = 'Thinness' if bmi < 18.5 else 'Normal' if bmi < 25 else 'Overweight'

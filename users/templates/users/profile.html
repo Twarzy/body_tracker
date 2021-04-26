@@ -16,23 +16,30 @@
     <a class="btn btn-outline-primary btn-sm" href="{% url 'account_details'%}" role="button">
                 Change username or email
             </a>
+    <a class="btn btn-outline-secondary btn-sm" href="{% url 'password_change' %}" role="button">Change Password</a>
     <p class="h3"><small class="text-muted">{{ user.email }}</small>
     </p><hr>
   </div>
   {% if not activated %}
    <div>
-       <a class="btn btn-outline-primary btn-sm" href="{% url 'profile'%}?change=yes" role="button">
-                EDIT
-            </a>
-       <a class="btn btn-outline-secondary btn-sm" href="{% url 'password_change' %}" role="button">Change Password</a>
-
        <div class="h4 mt-4">
-           <li>Age -{% if profile.age %} {{ profile.age }} {% else %} - {% endif%}</li>
-           <li>Height -{% if profile.height %} {{ profile.height }} {% else %} - {% endif%} cm</li>
-           <li>BMI -{% if bmi %} {{ bmi.0 }} - {{ bmi.1 }} {% else %} - {% endif%}</li>
+         <ul>
+           <li>Age -{% if profile.age %} {{ profile.age }} {% else %} - {% endif %}</li>
+           <li>Height -{% if profile.height %} {{ profile.height }} {% else %} - {% endif %} cm</li>
+
+           <li class="text-{% if bmi.0 < 18.5 %}warning {% elif bmi.0 < 25 %}success{% elif bmi.0 >= 25 %}danger
+                {% else %}muted{% endif %}">BMI -{% if bmi %} {{ bmi.0 }} - {{ bmi.1 }} {% else %}
+               <small> To calculate your BMI you have to add information</small>
+               about your height and weight. {% endif %}
+           </li>
+
+         </ul>
         </div>
+        <a class="btn btn-outline-primary btn-sm" href="{% url 'profile'%}?change=yes" role="button">
+                Edit your details
+        </a>
    </div>
-    {% else %}
+  {% else %}
 
   <form method="POST" class="mb-4">
        {% csrf_token %}

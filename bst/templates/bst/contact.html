@@ -1,0 +1,30 @@
+{% extends 'bst/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="h5 content-section mt-2">
+  <div class="form-group">
+    <h2 class="account-heading">Contact
+        <a class="btn btn-secondary" href="javascript:history.back()" role="button">
+            Back
+        </a>
+    </h2>
+  </div>
+ <hr>
+ <div class="form-group mt-4">
+    <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+       If you want to sent me feedback
+    </a>
+    <div class="collapse" id="collapseExample">
+      <div class="card card-body">
+        twarzowiec12@o2.pl
+      </div>
+    </div>
+    <p class="mt-4">
+     Project GitHub repository -
+      <a class="btn btn-outline-primary btn-sm" href="https://github.com/Twarzy/body_tracker" target="_blank">GitHub</a>
+    </p>
+ </div>
+</div>
+
+{% endblock %}
