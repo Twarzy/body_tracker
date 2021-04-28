@@ -16,10 +16,12 @@ Including another URLconf
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
+from users.views import AccountDeleteView
 
 urlpatterns = [
     path('register/', views.register, name='register'),
     path('profile/', views.profile, name='profile'),
+    path('profile/<slug:slug>/delete/', AccountDeleteView.as_view(), name='delete_account'),
     path('profile/account-details', views.change_account_details, name='account_details'),
     path('profile/change-password/', views.PasswordChange.as_view(), name='password_change'),
 ]

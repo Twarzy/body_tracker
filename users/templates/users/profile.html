@@ -14,9 +14,9 @@
   <div class="form-group mt-4">
     <p class="h2">{{ user.username }}
     <a class="btn btn-outline-primary btn-sm" href="{% url 'account_details'%}" role="button">
-                Change username or email
-            </a>
+                Change username or email</a>
     <a class="btn btn-outline-secondary btn-sm" href="{% url 'password_change' %}" role="button">Change Password</a>
+    <a class="btn btn-outline-danger btn-sm" href="{% url 'delete_account' user %}" role="button">Delete Account</a>
     <p class="h3"><small class="text-muted">{{ user.email }}</small>
     </p><hr>
   </div>

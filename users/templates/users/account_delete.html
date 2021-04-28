@@ -1,0 +1,18 @@
+{% extends "bst/base.html" %}
+{% block content %}
+    <div class="content-section mt-2">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom">Delete Account "{{ object.username }}"</legend>
+                <p class="h4">Are you sure you want to PERMANENTLY DELETE your account?</p>
+                <p class="h4">This operation can't be undone!</p>
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-danger" type="submit">Yes, Delete</button>
+                <a class="btn btn-outline-secondary" href="{% url 'profile' %}" >No!!! Cancel!</a>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
+

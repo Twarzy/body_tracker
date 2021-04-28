@@ -5,7 +5,7 @@
 {% for message in messages %}
 
     {% if message.tags == 'warning' %}
-        <a class="btn btn-secondary " href="{% url 'dashboard-all' %}" role="button">Go to measurement history</a>
+        <a class="btn btn-secondary " href="{% url 'dashboard-all' user %}" role="button">Go to measurement history</a>
     {% endif %}
 {% endfor %}
 {% if object %}

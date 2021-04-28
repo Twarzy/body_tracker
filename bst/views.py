@@ -16,10 +16,11 @@ import datetime, csv
 
 # TODO Progress chart in dashboard
 # TODO User gallery (rather private)
-# TODO MEASUREMENT url should be <username>/<date> format (in progress)
 # TODO BMI CALCULATOR for not logged user too
 # TODO detailed add measurement (with lots of body part, BMI, water level, fat level)
 # TODO BMI ANALYZER from profile
+
+# TODO calendar view, with active links to "measure days" and disable for days without entered measurement
 
 # TODO USER
 # TODO Password recovery
@@ -207,9 +208,6 @@ class MeasureEditView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMix
         return False
 
 
-# TODO calendar view, with active links to "measure days" and disable for days without entered measurement
-
-
 # Delete measurement
 class MeasureDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Measurement
@@ -223,12 +221,22 @@ class MeasureDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
         self.object = self.get_object()
         context = self.get_context_data(object=self.object)
+
         return self.render_to_response(context)
 
     def get_queryset(self):
         return Measurement.objects.filter(user=self.request.user)
 
-    # TODO add success message (SuccessMessageMixin not working on DeleteView)
+    def delete(self, request, *args, **kwargs):
+        """
+        Call the delete() method on the fetched object and then redirect to the
+        success URL.
+        """
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.delete()
+        messages.info(request, 'Measurement for {} deleted successfully.'.format(self.object.date))
+        return HttpResponseRedirect(success_url)
 
     def get_success_url(self):
         return reverse('dashboard-all', args=[self.request.user])

@@ -4,13 +4,15 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordChangeDoneView, PasswordChangeView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from bst.views import bmi_calculator
 from bst.models import Measurement
 from .models import Profile
 from .forms import (UserRegisterForm,
                     UserUpdateForm,
-                    ProfileEditForm,
-                    )
+                    ProfileEditForm)
 
 
 def register(request):
@@ -88,3 +90,32 @@ class PasswordChange(PasswordChangeView):
     def form_valid(self, form):
         messages.success(self.request, 'Your password has been changed.')
         return super().form_valid(form)
+
+
+class AccountDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = User
+    slug_field = 'username'
+    template_name = 'users/account_delete.html'
+
+    def get_queryset(self):
+        return User.objects.filter(id=self.request.user.id)
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Call the delete() method on the fetched object and then redirect to the
+        success URL.
+        """
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.delete()
+        messages.info(request, 'Account "{}" deleted successfully.'.format(self.object.username))
+        return HttpResponseRedirect(success_url)
+
+    def get_success_url(self):
+        return reverse('dashboard-all', args=[self.request.user])
+
+    def test_func(self):
+        user = self.get_object()
+        if self.request.user.id == user.id:
+            return True
+        return False
