@@ -1,63 +1,159 @@
 {% extends 'bst/base.html' %}
 {% block content %}
-<h1 class="mb-4"> Your measurement history</h1>
-<a class="btn btn-primary" href="{% url 'measure-add' %}" role="button">Add new measurement</a>
-{% if measures %}
-<a class="btn btn-primary" href="{% url 'export' %}" role="button">Export Data</a>
-{% endif %}
-<a class="btn btn-secondary" href="{% url 'dashboard' %}" role="button">Back to Dashboard</a>
 
-{% if measures %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="mt-4 mb-4">
+  <a class="btn btn-primary" href="{% url 'measure-add' %}" role="button">Add new measurement</a>
+  <a class="btn btn-primary" href="{% url 'dashboard-all' user %}" role="button">All records</a>
+  <a class="btn btn-secondary" href="{% url 'testing-panel' %}" role="button">Testing panel</a>
+</div>
+
+{% if not profile.height %}
+<h5> Hi! {{user}}, I strongly recommend to add few information (like height or age) about you to take full advantage
+      from BST. You can do this <a href="{% url 'profile'%}?change=yes">here</a>.</h5>
+    <br>
+{% endif %}
+
+{% if not measures %}
+
+<h5>Your database is empty. Add your first measurement <a href="{% url 'measure-add' %}">here</a>.</h5>
+{% else %}
+<div class="row">
+    <div class="col-sm-6">
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <div class="col-sm-6">
+        <canvas id="myChart2"></canvas>
+    </div>
+
+</div>
+
 <table class="table table-striped">
   <thead>
     <tr>
       <th scope="col"></th>
-      <th scope="col">Weight</th>
-      <th scope="col">Chest</th>
-      <th scope="col">Waist</th>
-      <th scope="col">Biceps</th>
-      <th scope="col"></th>
+      <th scope="col">Start</th>
+      <th scope="col">Now</th>
+      <th scope="col">Progress</th>
+      <th scope="col">Progress [%]</th>
     </tr>
   </thead>
   <tbody>
-
-  {% for measure in measures %}
     <tr>
-      <th scope="row">{{ measure.date|date:"d/m/y" }}</th>
-      {% if measure.weight == None %}
-      <td>&nbsp&nbsp-</td>
-      {% else %}
-      <td>{{ measure.weight }} kg</td>
-      {% endif %}
-
-      {% if measure.chest == None %}
-      <td>&nbsp&nbsp-</td>
-      {% else %}
-      <td>{{ measure.chest }} cm</td>
-      {% endif %}
-
-      {% if measure.waist == None %}
-      <td>&nbsp&nbsp-</td>
-      {% else %}
-      <td>{{ measure.waist }} cm</td>
-      {% endif %}
-
-      {% if measure.biceps == None %}
-      <td>&nbsp&nbsp-</td>
-      {% else %}
-      <td>{{ measure.biceps }} cm</td>
-      {% endif %}
-
-      <td><a class="btn btn-primary" href="{% url 'measure-detail' measure.user measure.date %}" role="button">Detail</a></td>
+      <th scope="col">Date</th>
+      <th scope="col">{{ start.date|date:"d/m/y" }}</th>
+      <th scope="col">{{ changes.date }} days</th>
+      <th scope="col">-</th>
+      <th scope="col">-</th>
     </tr>
-  {% endfor %}
-
+    <tr>
+      <th scope="col">Weight</th>
+      <td>{% if start.weight %}{{ start.weight }} kg{% else %} - {% endif %}</td>
+      <td>{% if now.weight %}{{ now.weight }} kg{% else %} - {% endif %}</td>
+      <td>{% if changes.weight > 0 %}+{% endif %}{{ changes.weight }} kg</td>
+      <td>{% if perc.weight > 0 %}+{% endif %}{{ perc.weight }} %</td>
+    </tr>
+    <tr>
+      <th scope="col">Chest</th>
+      <td>{% if start.chest %}{{ start.chest }} cm{% else %} - {% endif %}</td>
+      <td>{% if now.chest %}{{ now.chest }} cm{% else %} - {% endif %}</td>
+      <td>{% if changes.chest > 0 %}+{% endif %}{{ changes.chest }} cm</td>
+      <td>{% if perc.chest > 0 %}+{% endif %}{{ perc.chest }} %</td>
+    </tr>
+    <tr>
+      <th scope="col">Waist</th>
+      <td>{% if start.waist %}{{ start.waist }} cm{% else %}-{% endif %}</td>
+      <td>{% if now.waist %}{{ now.waist }} cm{% else %}-{% endif %}</td>
+      <td>{% if changes.waist > 0 %}+{% endif %}{{ changes.waist }} cm</td>
+      <td>{% if perc.waist > 0 %}+{% endif %}{{ perc.waist }} %</td>
+    </tr>
+    <tr>
+      <th scope="col">Biceps</th>
+      <td>{% if start.biceps %}{{ start.biceps }} cm{% else %}-{% endif %}</td>
+      <td>{% if now.biceps %}{{ now.biceps }} cm{% else %}-{% endif %}</td>
+      <td>{% if changes.biceps > 0 %}+{% endif %}{{ changes.biceps }} cm</td>
+      <td>{% if perc.biceps > 0 %}+{% endif %}{{ perc.biceps }} %</td>
+    </tr>
   </tbody>
 </table>
 
-{% else %}
 
-    <h3 class="mt-4"> {{ user }} You don't have any measurement in data base</h3>
+<script>
+const dataWeight = {
+  labels: {{ chart.labels|safe }},
+  datasets: [
+      {
+        label: 'Weight',
+        backgroundColor: 'rgb(13, 110, 253)',
+        borderColor: 'rgb(13, 110, 253)',
+        data: {{ chart.weight }},
+      }
+    ]
+};
+
+dataRest = {
+  labels: {{ chart.labels|safe }},
+  datasets: [
+      {
+        label: 'Chest',
+        backgroundColor: 'rgb(253,13,13)',
+        borderColor: 'rgb(253,13,13)',
+        data: {{ chart.chest }},
+      },
+      {
+        label: 'Waist',
+        backgroundColor: 'rgb(13, 110, 253)',
+        borderColor: 'rgb(13, 110, 253)',
+        data: {{ chart.waist }},
+      },
+         {
+        label: 'Biceps',
+        backgroundColor: 'rgb(255,229,0)',
+        borderColor: 'rgb(255,229,0)',
+        data: {{ chart.biceps }},
+      }
+    ]
+};
+    const config = {
+  type: 'line',
+  data: dataWeight,
+  options: {
+      scales: {
+          y: {
+              title: {
+                  display: true,
+                  text: 'kg'
+              }
+          }
+      }
+  }
+};
+        const config2 = {
+  type: 'line',
+  data: dataRest,
+  options: {
+      scales: {
+          y: {
+              title: {
+                  display: true,
+                  text: 'cm'
+              }
+          }
+      }
+  }
+};
+      var ctx = document.getElementById('myChart');
+      var ctx2 = document.getElementById('myChart2');
+      var myChart = new Chart(ctx,
+    config
+  );
+      var myChart = new Chart(ctx2,
+    config2
+  );
+</script>
+
 
 {% endif %}
 {% endblock %}

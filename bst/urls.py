@@ -38,6 +38,6 @@ urlpatterns = [
 
 
     # testing_panel
-    # path('test', views.testing_panel, name='testing-panel'),
-    path('test', TestView.as_view(), name='testing-panel'),
+    path('test', views.testing_panel, name='testing-panel'),
+    # path('test', TestView.as_view(), name='testing-panel'),
     ]

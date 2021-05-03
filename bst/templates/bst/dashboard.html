@@ -1,5 +1,6 @@
 {% extends 'bst/base.html' %}
 {% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <div class="mt-4 mb-4">
   <a class="btn btn-primary" href="{% url 'measure-add' %}" role="button">Add new measurement</a>
@@ -17,6 +18,16 @@
 
 <h5>Your database is empty. Add your first measurement <a href="{% url 'measure-add' %}">here</a>.</h5>
 {% else %}
+<div class="row">
+    <div class="col-sm-6">
+        <canvas id="myChart"></canvas>
+    </div>
+    <div class="col-sm-6">
+        <canvas id="myChart2"></canvas>
+    </div>
+</div>
+
+
 <table class="table table-striped">
   <thead>
     <tr>
@@ -65,5 +76,81 @@
     </tr>
   </tbody>
 </table>
+
+
+<script>
+const dataWeight = {
+  labels: {{ chart.labels|safe }},
+  datasets: [
+      {
+        label: 'Weight',
+        backgroundColor: 'rgb(13, 110, 253)',
+        borderColor: 'rgb(13, 110, 253)',
+        data: {{ chart.weight }},
+      }
+    ]
+};
+
+dataRest = {
+  labels: {{ chart.labels|safe }},
+  datasets: [
+      {
+        label: 'Chest',
+        backgroundColor: 'rgb(253,13,13)',
+        borderColor: 'rgb(253,13,13)',
+        data: {{ chart.chest }},
+      },
+      {
+        label: 'Waist',
+        backgroundColor: 'rgb(13, 110, 253)',
+        borderColor: 'rgb(13, 110, 253)',
+        data: {{ chart.waist }},
+      },
+         {
+        label: 'Biceps',
+        backgroundColor: 'rgb(255,229,0)',
+        borderColor: 'rgb(255,229,0)',
+        data: {{ chart.biceps }},
+      }
+    ]
+};
+    const config = {
+  type: 'line',
+  data: dataWeight,
+  options: {
+      scales: {
+          y: {
+              title: {
+                  display: true,
+                  text: 'kg'
+              }
+          }
+      }
+  }
+};
+        const config2 = {
+  type: 'line',
+  data: dataRest,
+  options: {
+      scales: {
+          y: {
+              title: {
+                  display: true,
+                  text: 'cm'
+              }
+          }
+      }
+  }
+};
+      var ctx = document.getElementById('myChart');
+      var ctx2 = document.getElementById('myChart2');
+      var myChart = new Chart(ctx,
+    config
+  );
+      var myChart = new Chart(ctx2,
+    config2
+  );
+</script>
+
 {% endif %}
 {% endblock %}

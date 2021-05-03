@@ -14,7 +14,7 @@ from .forms import MeasurementForm
 import datetime, csv
 
 
-# TODO Progress chart in dashboard
+# TODO Progress chart in dashboard - #IN PROGRESS
 # TODO User gallery (rather private)
 # TODO BMI CALCULATOR for not logged user too
 # TODO detailed add measurement (with lots of body part, BMI, water level, fat level)
@@ -24,7 +24,6 @@ import datetime, csv
 
 # TODO USER
 # TODO Password recovery
-# TODO Delete Account
 # TODO Different User profile details
 # TODO height BMI (when adding measurement BMI should be auto evaluate and add to measurement table)
 # TODO tracking water level/FAT in body
@@ -107,15 +106,31 @@ def dashboard(request):
                    'biceps': compare_two(latest_measure.biceps, start_measure.biceps)
                    }
 
+        chart = {'labels': [],
+                 'weight': [],
+                 'chest': [],
+                 'waist': [],
+                 'biceps': []
+                 }
+
+        queryset = all_measure.reverse()
+        for measure in queryset:
+            chart['labels'].append(measure.date.strftime("%d.%m.%y"))
+
+            for bodypart in ['weight', 'biceps', 'waist', 'chest']:
+                chart[bodypart].append(getattr(measure, bodypart)) if getattr(measure, bodypart) else chart[
+                    bodypart].append(chart[bodypart][-1]) if chart[bodypart][-1] else 0
+
         context = {'measures': [start_measure, latest_measure, changes, changes_perc],
                    'start': start_measure,
                    'now': latest_measure,
                    'changes': changes,
                    'perc': changes_perc,
-                   'profile': user_profile
+                   'profile': user_profile,
+                   'chart': chart
                    }
 
-        return render(request, 'bst/dashboard.html', context)
+        return render(request, 'bst/test.html', context)
 
 
 # Adding measurement
@@ -325,41 +340,7 @@ def test(request):
 
 # just for testing on early development
 def testing_panel(request):
-    tracks = Measurement.objects.filter(user=request.user).order_by('date')
-
-    context = {'tracks': tracks,
-               }
-
-    tracks = Measurement.objects.filter(user=request.user).order_by('date')
-    start_measure = Measurement.objects.filter(user=request.user).order_by('date').first()
-    latest_measure = Measurement.objects.filter(user=request.user).order_by('date').last()
-
-    if not start_measure:
-        return render(request, 'bst/panel.html')
-
-    else:
-
-        def percentage(first, last):
-            result = (last / first - 1) * 100
-            return round(result, 1)
-
-        days_change = (latest_measure.date - start_measure.date).days
-        weight_change = percentage(start_measure.weight, latest_measure.weight)
-        chest_change = percentage(start_measure.chest, latest_measure.chest)
-        waist_change = percentage(start_measure.waist, latest_measure.waist)
-        biceps_change = percentage(start_measure.biceps, latest_measure.biceps)
-
-        changes = {'date': days_change,
-                   'weight': weight_change,
-                   'chest': chest_change,
-                   'waist': waist_change,
-                   'biceps': biceps_change
-                   }
-
-        context = {'spams': [start_measure, latest_measure, changes]
-                   }
-
-        return render(request, 'bst/panel.html', context)
+    return render(request, 'bst/test.html')
 
 
 class TestView(LoginRequiredMixin, ListView):
