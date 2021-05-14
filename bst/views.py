@@ -10,7 +10,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from .models import Measurement
 from users.models import Profile
-from .forms import MeasurementForm
+from .forms import MeasurementForm, BmiForm
 import datetime, csv
 
 
@@ -290,6 +290,30 @@ def export_records(request):
 
 def contact(request):
     return render(request, 'bst/contact.html')
+
+
+def bmi_calc(request):
+
+    if request.method == 'POST':
+        form = BmiForm(request.POST)
+        if form.is_valid():
+            age = form.cleaned_data.get('age')
+            gender = form.cleaned_data.get('gender')
+            weight = form.cleaned_data.get('weight')
+            height = form.cleaned_data.get('height')
+
+            bmi = round(weight / (height / 100) ** 2, 1)
+
+            context = {'form': form,
+                       'bmi': bmi,
+                       'bmi_analyse': bmi_analyzer(bmi)
+            }
+
+            return render(request, 'bst/bmi.html', context)
+
+    else:
+        form = BmiForm()
+        return render(request, 'bst/bmi.html', {'form': form})
 
 
 # Utilities

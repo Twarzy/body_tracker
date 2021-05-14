@@ -1,0 +1,33 @@
+{% extends 'bst/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col">
+            <form method="POST">
+                <fieldset>
+                {% csrf_token %}
+                 <legend class="border-bottom">BMI CALCULATOR</legend>
+                   {{ form|crispy }}
+                 <button class="btn btn-outline-primary mt-2 mb-2" type="submit">Calculate</button>
+                </fieldset>
+            </form>
+
+        </div>
+        <div class="col">
+            {% if bmi %}
+                <legend class="border-bottom">Results</legend>
+
+                <ul>
+                   <li>Your BMI = {{ bmi }}</li>
+                   <li>Result classified as <span class="text-{% if bmi < 18.5 %}warning {% elif bmi < 25 %}success{% elif bmi >= 25 %}danger
+                        {% else %}muted{% endif %}">{{ bmi_analyse }}</span>.
+                   </li>
+                </ul>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

@@ -26,6 +26,7 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
     path('bst/', include('bst.urls')),
     path('contact/', bst_views.contact, name='contact'),
+    path('bmi/', bst_views.bmi_calc, name='bmi'),
     path('', include('users.urls')),
     #  testing pages - to delete in future
 
