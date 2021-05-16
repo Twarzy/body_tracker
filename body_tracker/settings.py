@@ -27,7 +27,8 @@ SECRET_KEY = '662*u0bf5f(w5uhhxzlaok$y9(-d_*@u7)qpuh%ilpmx#05e7y'
 DEBUG = True
 
 ALLOWED_HOSTS = ['localhost',
-                 '127.0.0.1'
+                 '127.0.0.1',
+                 'body-tracker.herokuapp.com'
                  ]
 
 # Application definition
