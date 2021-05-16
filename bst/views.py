@@ -13,12 +13,10 @@ from users.models import Profile
 from .forms import MeasurementForm, BmiForm
 import datetime, csv
 
-
 # TODO Progress chart in dashboard - #IN PROGRESS
 # TODO User gallery (rather private)
-# TODO BMI CALCULATOR for not logged user too
+# TODO Improved BMI CALCULATOR
 # TODO detailed add measurement (with lots of body part, BMI, water level, fat level)
-# TODO BMI ANALYZER from profile
 
 # TODO calendar view, with active links to "measure days" and disable for days without entered measurement
 
@@ -313,7 +311,8 @@ def bmi_calc(request):
 
     else:
         form = BmiForm()
-        return render(request, 'bst/bmi.html', {'form': form})
+
+    return render(request, 'bst/bmi.html', {'form': form})
 
 
 # Utilities

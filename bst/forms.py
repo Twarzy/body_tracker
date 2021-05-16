@@ -13,7 +13,8 @@ class MeasurementForm(forms.ModelForm):
 
 class BmiForm(forms.Form):
 
-    age = forms.IntegerField()
-    gender = forms.ChoiceField(widget=forms.RadioSelect, choices=[('1', 'Male'), ('2', 'Female')])
-    weight = forms.IntegerField(label='Weight in "kg"')
-    height = forms.IntegerField(label='Height in "cm"')
+    age = forms.IntegerField(min_value=2, max_value=150)
+    gender = forms.TypedChoiceField(widget=forms.RadioSelect,
+                                    choices=[('1', 'Male'), ('2', 'Female')])
+    weight = forms.IntegerField(label='Weight in "kg"', min_value=1)
+    height = forms.IntegerField(label='Height in "cm"', min_value=1)
