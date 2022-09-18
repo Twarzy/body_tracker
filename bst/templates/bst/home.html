@@ -6,15 +6,13 @@
 
     {% if user.is_authenticated %}
 
-        <p class="h4">Thank you for using my web app {{ user }}.</p>
-        <p class="h4"> Go to <a href="{% url 'dashboard' %}">Dashboard.</a></p>
+        <p class="h4">You are logged as "{{ user }}".</p>
+        <p class="h4"> Go to <a href="{% url 'dashboard' %}">Dashboard</a> or <a href="{% url 'logout' %}">Log out.</a></p>
     {% else %}
-        <h3>BodySizeTracker</h3>
-
         <p class="h4">Exercise? Being on diet? Or just want to stay healthy?</p>
         <p class="h4">Now you can keep your body measurements in one place.</p>
-
-        <div class="container text-center mt-5 mb-3">
+         
+        <div class="container text-center mt-3 mb-3">
             <div class="row">
               <div class="col">
                 <a href="{% static 'bst/preview_ds.png' %}">
@@ -28,15 +26,20 @@
               </div>
              </div>
           </div>
-
-       
-     
-
+          <p class="h4">First time? Try    
+            <a href="{% url 'demo' %}" class="btn btn-primary btn-lg px-4">      
+              <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
+                <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+                </svg>
+                Interactive demo dashboard
+             </a>
+          </p>
         <p class="h4">
             <a href="{% url 'login' %}">Login</a>
           or
             <a href="{% url 'register' %}">Register</a>
-          to access all features of BST.</p>
+          to access all features of Body Size Tracker.</p>
+          
     {% endif %}   
     </div>
 

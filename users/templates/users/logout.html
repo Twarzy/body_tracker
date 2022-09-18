@@ -1,7 +1,7 @@
 {% extends 'bst/base.html' %}
 {% block content %}
-    <h2 class="mt-2"> You have been logged out</h2>
+    <h2 class="mt-2"> You have been logged out.</h2>
     <div>
-       <a href="{% url 'login' %}">Log In Again</a>
+       <a href="{% url 'login' %}">Log in again</a> or go to <a href="{% url 'home' %}">home page</a>
     </div>
 {% endblock %}
