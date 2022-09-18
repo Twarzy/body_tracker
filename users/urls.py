@@ -24,4 +24,5 @@ urlpatterns = [
     path('profile/<slug:slug>/delete/', AccountDeleteView.as_view(), name='delete_account'),
     path('profile/account-details', views.change_account_details, name='account_details'),
     path('profile/change-password/', views.PasswordChange.as_view(), name='password_change'),
+    path('demo', views.demo_login, name='demo')
 ]

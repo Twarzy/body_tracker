@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, reverse
 from django.urls import reverse_lazy
 from django.contrib import messages
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordChangeDoneView, PasswordChangeView
@@ -119,3 +120,13 @@ class AccountDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user.id == user.id:
             return True
         return False
+
+def demo_login(request):   
+
+    username = 'Demo'
+    password = '123Testing' 
+
+    user = authenticate(request, username=username, password=password)
+    login(request, user)
+    return redirect('dashboard')
+
