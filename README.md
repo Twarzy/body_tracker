@@ -15,13 +15,13 @@
 - Storing measurements in database
 - Dashboard with interactive charts and progress information
 - Exporting measurements history to CSV/PDF file
-- Interactive Charts - 
+- Interactive Charts
 - BMI Calculator
 
 
 ## Technologies Used
 - Python - version 3.8
-- Django = version 3.2
+- Django - version 3.2
 
 
 ## Screenshots
