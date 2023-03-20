@@ -1,6 +1,6 @@
 # Body Size Tracker
 > Portal where you can keep track of your body measurements.
-> Live demo [_here_](https://body-tracker.herokuapp.com/). 
+> Live demo [_here_](https://body-tracker.onrender.com/). 
 
 ## Table of Contents
 * [General Features](#general-information)
